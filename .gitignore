@@ -1,0 +1,7 @@
+*~
+*.hi
+*.o
+
+logic-translation.cabal
+dist/
+Main
