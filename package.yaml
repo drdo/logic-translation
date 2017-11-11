@@ -17,6 +17,7 @@ dependencies:
   - utf8-string >= 1 # No idea what version we actually need
 
 library:
+  source-dirs: library
   exposed-modules:
     - BooleanCombination
     - TL
@@ -27,6 +28,7 @@ library:
     - Translation
 
 executable:
+  source-dirs: executable
   main: Main.hs
   dependencies:
     - logic-translation

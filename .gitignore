@@ -1,6 +1,6 @@
-*~
-*.hi
-*.o
+**/*~
+**/*.hi
+**/*.o
 
 logic-translation.cabal
 dist/
