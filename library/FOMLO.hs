@@ -61,8 +61,6 @@ fomloImplies ∷ (Ord p, Ord x) ⇒ FOMLO p x → FOMLO p x → Bool
 fomloImplies = bcImplies sfomloImplies
 
 ----------------------------------------
--- Simplification
-
 sfomloSimplify ∷ (Ord p, Ord x) ⇒ SimpleFOMLO p x → FOMLO p x
 sfomloSimplify = final . recursive
   where
