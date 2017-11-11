@@ -83,8 +83,6 @@ tlImplies ∷ Ord p ⇒ TL p → TL p → Bool
 tlImplies = bcImplies stlImplies
 
 ----------------------------------------
--- Simplification
-
 stlSimplify ∷ Ord p ⇒ SimpleTL p → TL p
 stlSimplify = final . recursive
   where
