@@ -9,8 +9,8 @@ module BooleanCombination
   , bot, top, (∨), (∧), (-->), (<-->), disjList, conjList, impl, biimpl
   , bcFlip
   , bcMap, bcTraverse, bcJoin
-  , Literal (..), unlit, fromLiteral, complement
   , bcImplies, bcSimplify
+  , Literal (..), unlit, fromLiteral, complement
   , fromCNF, cnf, cnfWithSimplify
   , fromDNF, dnf, dnfWithSimplify
   )
@@ -31,6 +31,12 @@ data BC a
   | And (Set (BC a))
   deriving
     (Eq, Generic, Ord, Show)
+
+instance Foldable BC where
+  foldMap f (Prim x) = f x
+  foldMap f (Not α) = foldMap f α
+  foldMap f (Or αs) = foldMap (foldMap f) αs
+  foldMap f (And αs) = foldMap (foldMap f) αs
 
 instance NFData a ⇒ NFData (BC a)
 
@@ -102,32 +108,6 @@ bcJoin (Or αs) = Or (Set.map bcJoin αs)
 bcJoin (And αs) = And (Set.map bcJoin αs)
 
 --------------------------------------------------------------------------------
-instance Foldable BC where
-  foldMap f (Prim x) = f x
-  foldMap f (Not α) = foldMap f α
-  foldMap f (Or αs) = foldMap (foldMap f) αs
-  foldMap f (And αs) = foldMap (foldMap f) αs
-
---------------------------------------------------------------------------------
-data Literal a
-  = Neg a
-  | Pos a
-  deriving
-    (Eq, Ord, Show)
-
-unlit ∷ Literal a → a
-unlit (Neg x) = x
-unlit (Pos x) = x
-
-fromLiteral ∷ Literal a → BC a
-fromLiteral (Neg x) = Not (Prim x)
-fromLiteral (Pos x) = Prim x
-
-complement ∷ Literal a → Literal a
-complement (Neg x) = Pos x
-complement (Pos x) = Neg x
-
---------------------------------------------------------------------------------
 -- | Detects some cases where x implies y
 bcImplies ∷ Ord a ⇒ (a → a → Bool) → BC a → BC a → Bool
 bcImplies primImplies x y = case (x,y) of
@@ -183,6 +163,25 @@ bcSimplify primImplies primSimplify = final . fusion . recursive
       α → α
 
 --------------------------------------------------------------------------------
+data Literal a
+  = Neg a
+  | Pos a
+  deriving
+    (Eq, Ord, Show)
+
+unlit ∷ Literal a → a
+unlit (Neg x) = x
+unlit (Pos x) = x
+
+fromLiteral ∷ Literal a → BC a
+fromLiteral (Neg x) = Not (Prim x)
+fromLiteral (Pos x) = Prim x
+
+complement ∷ Literal a → Literal a
+complement (Neg x) = Pos x
+complement (Pos x) = Neg x
+
+--------------------
 fromCNF ∷ Ord a ⇒ Set (Set (Literal a)) → BC a
 fromCNF = And . Set.map (Or . Set.map fromLiteral)
 
