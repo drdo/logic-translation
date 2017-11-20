@@ -112,26 +112,28 @@ bcJoin (And αs) = And (Set.map bcJoin αs)
 bcImplies ∷ Ord a ⇒ (a → a → Bool) → BC a → BC a → Bool
 bcImplies primImplies x y = case (x,y) of
   (Prim a, Prim b) → a `primImplies` b
-  (Not a, Not b) → bcImplies primImplies b a
-  (Or as, Or bs) → flip all as (\a → flip any bs (\b → bcImplies primImplies a b))
-  (Or as, b) → flip all as (\a → bcImplies primImplies a b)
-  (a, Or bs) → flip any bs (\b → bcImplies primImplies a b)
-  (And as, And bs) → flip all bs (\b → bcImplies primImplies (And as) b)
-  (And as, b) → flip any as (\a → bcImplies primImplies a b)
-  (a, And bs) → flip all bs (\b → bcImplies primImplies a b)
+  (Not a, Not b) → b `implies` a
+  (Or as, b) → flip all as (\a → a `implies` b)
+  (a, Or bs) → flip any bs (\b → a `implies` b)
+  (And as, b) → flip any as (\a → a `implies` b)
+  (a, And bs) → flip all bs (\b → a `implies` b)
   (a,b) | (a == bot) → True
         | (b == top) → True
-        | otherwise → False
+  _ → False
+  where
+    implies = bcImplies primImplies
 
 --------------------
 -- | Simplification
 bcSimplify ∷ Ord a ⇒ (a → a → Bool) → (a → BC a) → BC a → BC a
 bcSimplify primImplies primSimplify = final . fusion . recursive
   where
+    simplify = bcSimplify primImplies primSimplify
+    implies = bcImplies primImplies
     recursive (Prim x) = primSimplify x
-    recursive (Not α) = Not (bcSimplify primImplies primSimplify α)
-    recursive (Or αs) = Or (Set.map (bcSimplify primImplies primSimplify) αs)
-    recursive (And αs) = And (Set.map (bcSimplify primImplies primSimplify) αs)
+    recursive (Not α) = Not (simplify α)
+    recursive (Or αs) = Or (Set.map (simplify) αs)
+    recursive (And αs) = And (Set.map (simplify) αs)
     fusion = \case
       Or αs → Or $ foldMap (\case {Or βs → βs ; β → [β]}) αs
       And αs → And $ foldMap (\case {And βs → βs ; β → [β]}) αs
@@ -145,7 +147,7 @@ bcSimplify primImplies primSimplify = final . fusion . recursive
               in if any validates αs
                  then top
                  else let isRemovable β =
-                            flip any αs (\α → α /= β && bcImplies primImplies β α)
+                            flip any αs (\α → α /= β && β `implies` α)
                           αs' = Set.filter (not . isRemovable) αs
                       in if | Set.null αs' → bot
                             | Set.size αs' == 1 → Set.elemAt 0 αs'
@@ -155,7 +157,7 @@ bcSimplify primImplies primSimplify = final . fusion . recursive
                in if any falsifies αs
                   then bot
                   else let isRemovable β =
-                             flip any αs (\α → α /= β && bcImplies primImplies α β)
+                             flip any αs (\α → α /= β && α `implies` β)
                            αs' = Set.filter (not . isRemovable) αs
                        in if | Set.null αs' → top
                              | Set.size αs' == 1 → Set.elemAt 0 αs'
