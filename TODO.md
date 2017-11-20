@@ -1,5 +1,5 @@
 We can split (distribution) based on our context,
-if we are on the left side of a temporal operator, we should put conjunction first, and vice-versa.
+if we are on the left side of a temporal operator, we should put conjunction first, and vice-versa. A negation context swaps things.
 
 We can treat pure past formulas as atoms in the normal form conversions,
 there's no need to go down to the simple past formulas,
