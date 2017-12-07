@@ -113,12 +113,10 @@ bcImplies ∷ Ord a ⇒ (a → a → Bool) → BC a → BC a → Bool
 bcImplies primImplies x y = case (x,y) of
   (Prim a, Prim b) → a `primImplies` b
   (Not a, Not b) → b `implies` a
-  (Or as, b) → flip all as (\a → a `implies` b)
-  (a, Or bs) → flip any bs (\b → a `implies` b)
-  (And as, b) → flip any as (\a → a `implies` b)
-  (a, And bs) → flip all bs (\b → a `implies` b)
-  (a,b) | (a == bot) → True
-        | (b == top) → True
+  (Or as, b) | flip all as (\a → a `implies` b) → True
+  (a, Or bs) | flip any bs (\b → a `implies` b) → True
+  (And as, b) | flip any as (\a → a `implies` b) → True
+  (a, And bs) | flip all bs (\b → a `implies` b) → True
   _ → False
   where
     implies = bcImplies primImplies
