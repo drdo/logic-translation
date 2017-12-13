@@ -39,6 +39,9 @@ many2 p = (:) <$> p <*> many1 p
 list2 ∷ Stream s m Char ⇒ ParsecT s u m a → ParsecT s u m [a]
 list2 p = many2 (spaces *> p)
 
+spaces1 ∷ Stream s m Char ⇒ ParsecT s u m ()
+spaces1 = skipMany1 space
+
 parens ∷ Stream s m Char ⇒ ParsecT s u m a → ParsecT s u m a
 parens p = spaces *> between (char '(' *> spaces) (spaces *> char ')') p
 
@@ -63,17 +66,15 @@ bcP primP = spaces *> choiceTry [ botP
   where
     variadicOp names constructor = parens $ do
       choiceTry $ string <$> names
-      spaces
-      constructor <$> many (bcP primP)
+      constructor <$> many (spaces1 *> bcP primP)
     variadic1Op names constructor = parens $ do
       choiceTry $ string <$> names
-      spaces
-      constructor <$> many1 (bcP primP)
+      constructor <$> many1 (spaces1 *> bcP primP)
     botP = (choiceTry $ string <$> ["⊥", "bot", "Bot", "false", "False"]) *> pure bot
     topP = (choiceTry $ string <$> ["⊤", "top", "Top", "true", "True"]) *> pure top
     negP = parens $ do
       choiceTry $ string <$> ["¬", "not", "Not", "neg", "Neg"]
-      spaces
+      spaces1
       Not <$> bcP primP
     orP = variadicOp ["∨", "or", "Or"] disjList
     andP = variadicOp ["∧", "and", "And"] conjList
@@ -96,17 +97,12 @@ simpleTlP = spaces *> choiceTry [ variableP
     variableP = Var <$> predicateNameP
     binaryOpP names constructor = parens $ do
       choiceTry $ string <$> names
-      spaces
-      arg0 ← tlP
-      spaces
-      arg1 ← tlP
-      pure $ constructor arg0 arg1
+      constructor <$> (spaces1 *> tlP) <*> (spaces1 *> tlP)
     sinceP = binaryOpP ["since", "Since", "s", "S"] S
     untilP = binaryOpP ["until", "Until", "u", "U"] U
     unaryOp names constructor = parens $ do
       choiceTry $ string <$> names
-      spaces
-      constructor <$> tlP
+      constructor <$> (spaces1 *> tlP)
     nextPastP = unaryOp ["●", "prev", "Prev"] nextPast
     nextP = unaryOp ["○", "next", "Next"] next
     eventuallyPastP = unaryOp ["⧫", "eventually-past", "Eventually-Past"] eventuallyPast
