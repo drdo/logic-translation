@@ -5,3 +5,5 @@
 logic-translation.cabal
 dist/
 Main
+
+.DS_Store
