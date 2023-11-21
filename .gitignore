@@ -4,6 +4,7 @@
 
 logic-translation.cabal
 dist/
+dist-newstyle/
 Main
 
 .DS_Store
