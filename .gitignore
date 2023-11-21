@@ -4,6 +4,7 @@
 
 dist/
 dist-newstyle/
-Main
+.stack-work
+stack.yaml.lock
 
 .DS_Store
