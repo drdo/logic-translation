@@ -1,6 +1,5 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE MultiWayIf #-}
-{-# LANGUAGE UnicodeSyntax #-}
 
 import Control.Exception
 import Data.Functor (($>))
@@ -25,7 +24,7 @@ data Flags
   deriving
     (Eq, Show)
 
-optionDescription ∷ [OptDescr Flags]
+optionDescription :: [OptDescr Flags]
 optionDescription =
   [ Option ['h'] ["help"] (NoArg Help) "Help"
   , Option ['n'] ["no-simplification"] (NoArg NoSimplification) "Disable simplification"
@@ -34,9 +33,9 @@ optionDescription =
   , Option ['l'] ["translateLTL"] (NoArg TranslateLTL) "Run the TranslateLTL algorithm"
   ]
 
-main ∷ IO ()
+main :: IO ()
 main = do
-  (options, _, _) ← getOpt Permute optionDescription <$> getArgs
+  (options, _, _) <- getOpt Permute optionDescription <$> getArgs
   let mkParser p = spaces *> choice [ eof $> Nothing
                                     , Just <$> ((,) <$> p <*> getInput) ]
       sepAlg = if NoSimplification `elem` options
@@ -49,9 +48,9 @@ main = do
                         then translateLTL
                         else translateLTLWithSimplify
       loop parser alg printSeparator str = case parseString parser str of
-        Left e → throwIO e
-        Right Nothing → pure ()
-        Right (Just (x, str')) → do
+        Left e -> throwIO e
+        Right Nothing -> pure ()
+        Right (Just (x, str')) -> do
           let y = alg x
           printSeparator
           putStrLn . ppTL $ y
@@ -101,11 +100,11 @@ main = do
                ]
              header = intercalate "\n" headerLines
          in putStr $ usageInfo header optionDescription
-    else getContents >>= if | Translate `elem` options →
+    else getContents >>= if | Translate `elem` options ->
                                 loop (mkParser fomloP) translateAlg (pure ())
-                            | TranslateLTL `elem` options →
+                            | TranslateLTL `elem` options ->
                                 loop (mkParser fomloP) translateLTLAlg (pure ())
-                            | Sep `elem` options →
+                            | Sep `elem` options ->
                                 loop (mkParser tlP) sepAlg (pure ())
-                            | otherwise →
+                            | otherwise ->
                                 loop (mkParser fomloP) translateAlg (pure ())

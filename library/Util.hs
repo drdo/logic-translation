@@ -1,5 +1,4 @@
 {-# LANGUAGE OverloadedLists #-}
-{-# LANGUAGE UnicodeSyntax #-}
 
 module Util
   ( foldl1', setCartesianProduct, Inhabited (..)
@@ -12,17 +11,16 @@ import qualified Data.List as List
 import qualified Data.Set as Set
 
 --------------------------------------------------------------------------------
-foldl1' ∷ Foldable t ⇒ (a → a → a) → t a → a
+foldl1' :: Foldable t => (a -> a -> a) -> t a -> a
 foldl1' f = List.foldl1' f . toList
 
 --------------------------------------------------------------------------------
-setCartesianProduct ∷ Ord a ⇒ [Set a] → Set [a]
-setCartesianProduct [] = [[]]
-setCartesianProduct (s:ss) = foldMap (\l → Set.map (: l) s) (setCartesianProduct ss)
+setCartesianProduct :: Ord a => [Set a] -> Set [a]
+setCartesianProduct = foldr (\s -> foldMap (\ l -> Set.map (: l) s)) [[]]
 
 --------------------------------------------------------------------------------
 class Inhabited a where
-  inhabitant ∷ a
+  inhabitant :: a
 
 instance Inhabited [a] where
   inhabitant = []
