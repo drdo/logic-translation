@@ -3,7 +3,8 @@
 {-# LANGUAGE UnicodeSyntax #-}
 
 import Control.Exception
-import Data.List (intersperse)
+import Data.Functor (($>))
+import Data.List (intercalate)
 import System.Console.GetOpt
 import System.Environment
 import Text.Parsec
@@ -36,7 +37,7 @@ optionDescription =
 main ∷ IO ()
 main = do
   (options, _, _) ← getOpt Permute optionDescription <$> getArgs
-  let mkParser p = spaces *> choice [ eof *> pure Nothing
+  let mkParser p = spaces *> choice [ eof $> Nothing
                                     , Just <$> ((,) <$> p <*> getInput) ]
       sepAlg = if NoSimplification `elem` options
                then sep
@@ -98,7 +99,7 @@ main = do
                , "    - TL: (→ E1 (∧ (¬ E2) (Until (¬ E2) L1)))"
                , "Options:"
                ]
-             header = concat $ intersperse "\n" headerLines
+             header = intercalate "\n" headerLines
          in putStr $ usageInfo header optionDescription
     else getContents >>= if | Translate `elem` options →
                                 loop (mkParser fomloP) translateAlg (pure ())

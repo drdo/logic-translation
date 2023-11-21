@@ -1,0 +1,56 @@
+cabal-version: 3.0
+
+name:           logic-translation
+version:        0.0.1
+synopsis:       Translation from FOL to LTL+Past and LTL, via separation of LTL+Past
+category:       Logic
+homepage:       https://github.com/drdo/logic-translation#readme
+bug-reports:    https://github.com/drdo/logic-translation/issues
+maintainer:     Daniel Rebelo de Oliveira <drdo@drdo.eu>
+license:        LGPL-3.0-only
+license-file:   LICENSE
+build-type:     Simple
+
+source-repository head
+  type: git
+  location: https://github.com/drdo/logic-translation
+
+library
+  exposed-modules:
+      BooleanCombination
+      TL
+      FOMLO
+      Parse
+      Pretty
+      Separation
+      Translation
+  other-modules:
+      Util
+  hs-source-dirs:
+      library
+  build-depends:
+      base >=4.8 && <5
+    , bytestring >=0.10
+    , containers
+    , deepseq
+    , parsec ==3.*
+    , pretty
+    , text >=1
+    , utf8-string >=1
+  default-language: GHC2021
+
+executable logic-translation
+  main-is: Main.hs
+  hs-source-dirs:
+      executable
+  build-depends:
+      base >=4.8 && <5
+    , bytestring >=0.10
+    , containers
+    , deepseq
+    , logic-translation
+    , parsec ==3.*
+    , pretty
+    , text >=1
+    , utf8-string >=1
+  default-language: GHC2021

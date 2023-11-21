@@ -9,6 +9,7 @@ where
 
 import Data.ByteString (ByteString)
 import Data.Char
+import Data.Functor (($>))
 import Data.Functor.Identity
 import Data.Text (Text)
 import Text.Parsec
@@ -70,8 +71,8 @@ bcP primP = spaces *> choiceTry [ botP
     variadic1Op names constructor = parens $ do
       choiceTry $ string <$> names
       constructor <$> many1 (spaces1 *> bcP primP)
-    botP = (choiceTry $ string <$> ["⊥", "bot", "Bot", "false", "False"]) *> pure bot
-    topP = (choiceTry $ string <$> ["⊤", "top", "Top", "true", "True"]) *> pure top
+    botP = choiceTry (string <$> ["⊥", "bot", "Bot", "false", "False"]) $> bot
+    topP = choiceTry (string <$> ["⊤", "top", "Top", "true", "True"]) $> top
     negP = parens $ do
       choiceTry $ string <$> ["¬", "not", "Not", "neg", "Neg"]
       spaces1
@@ -131,9 +132,9 @@ simpleFomloP = spaces *> choiceTry [ equalP
       pure $ conjList (zipWith constructor args (tail args))
     equalP = binaryPredP ["="] Eq
     lessThanP = binaryPredP ["<"] Less
-    lessEqP = binaryPredP ["≤", "<="] (\x y → (Less x y) ∨ (Eq x y))
+    lessEqP = binaryPredP ["≤", "<="] (\x y → Less x y ∨ Eq x y)
     greaterThanP = binaryPredP [">"] (flip Less)
-    greaterEqP = binaryPredP ["≥", ">="] (\x y → (Eq x y) ∨ (Less y x))
+    greaterEqP = binaryPredP ["≥", ">="] (\x y → Eq x y ∨ Less y x)
     quantifierP names constructor = parens $ do
       choiceTry $ string <$> names
       spaces

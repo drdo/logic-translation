@@ -8,6 +8,7 @@ module Pretty
   )
 where
 
+import Prelude hiding ((<>))
 import Numeric.Natural
 import Text.PrettyPrint
 import qualified Data.Set as Set
@@ -61,7 +62,7 @@ tl = \case
           | belowIndentationThreshold a →
               "(∨ " <> (hsep . map tl . Set.toList $ bs) <> ")"
           | otherwise →
-              "(∨ " <> (nest 3 (vcat . map tl . Set.toList $ bs)) <> ")"
+              "(∨ " <> nest 3 (vcat . map tl . Set.toList $ bs) <> ")"
   a@(And bs) →
     let n = Set.size bs
     in if | n == 0 → "⊤"
@@ -69,7 +70,7 @@ tl = \case
           | belowIndentationThreshold a →
               "(∧ " <> (hsep . map tl . Set.toList $ bs) <> ")"
           | otherwise →
-              "(∧ " <> (nest 3 (vcat . map tl . Set.toList $ bs)) <> ")"
+              "(∧ " <> nest 3 (vcat . map tl . Set.toList $ bs) <> ")"
 
 ----------------------------------------
 ppTL ∷ TL String → String

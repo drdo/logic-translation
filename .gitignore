@@ -2,7 +2,6 @@
 **/*.hi
 **/*.o
 
-logic-translation.cabal
 dist/
 dist-newstyle/
 Main
