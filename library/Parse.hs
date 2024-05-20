@@ -2,17 +2,15 @@
 
 module Parse
   ( tlP, fomloP
-  , ParseError (..), parseText, parseString
+  , ParseError, parseText, parseString
   )
 where
 
-import Data.ByteString (ByteString)
 import Data.Char
 import Data.Functor (($>))
 import Data.Functor.Identity
 import Data.Text (Text)
 import Text.Parsec
-import qualified Data.ByteString.UTF8 as BSU8
 import qualified Data.Text as Text
 import BooleanCombination
 import FOMLO
