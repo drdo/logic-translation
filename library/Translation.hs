@@ -11,7 +11,6 @@ module Translation
   )
 where
 
-import Prelude hiding (partition)
 import Control.DeepSeq
 import Control.Exception
 import Data.Set (Set)
