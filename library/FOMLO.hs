@@ -27,10 +27,19 @@ data SimpleFOMLO p x
 
 type FOMLO p x = BC (SimpleFOMLO p x)
 
+pattern Pred :: p -> x -> FOMLO p x
 pattern Pred p x = Prim (Predicate p x)
+
+pattern Eq :: x -> x -> FOMLO p x
 pattern Eq x y = Prim (Equal x y)
+
+pattern Less :: x -> x -> FOMLO p x
 pattern Less x y = Prim (LessThan x y)
+
+pattern Exists :: x -> FOMLO p x -> FOMLO p x
 pattern Exists x φ = Prim (Existential x φ)
+
+pattern Forall :: x -> FOMLO p x -> FOMLO p x
 pattern Forall x φ = Prim (Universal x φ)
 
 simpleFreeVars :: Ord x => SimpleFOMLO p x -> Set x
