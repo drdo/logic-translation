@@ -30,13 +30,13 @@ library
       library
   build-depends:
       base >=4.8 && <5
-    , bytestring >=0.10
+    , bytestring
     , containers
     , deepseq
-    , parsec ==3.*
+    , parsec
     , pretty
-    , text >=1
-    , utf8-string >=1
+    , text
+    , utf8-string
   default-language: GHC2021
 
 executable logic-translation
@@ -45,12 +45,12 @@ executable logic-translation
       executable
   build-depends:
       base >=4.8 && <5
-    , bytestring >=0.10
+    , bytestring
     , containers
     , deepseq
     , logic-translation
-    , parsec ==3.*
+    , parsec
     , pretty
-    , text >=1
-    , utf8-string >=1
+    , text
+    , utf8-string
   default-language: GHC2021
