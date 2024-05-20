@@ -42,6 +42,8 @@ pattern Exists x φ = Prim (Existential x φ)
 pattern Forall :: x -> FOMLO p x -> FOMLO p x
 pattern Forall x φ = Prim (Universal x φ)
 
+{-# COMPLETE Pred, Eq, Less, Exists, Forall, Not, Or, And #-}
+
 simpleFreeVars :: Ord x => SimpleFOMLO p x -> Set x
 simpleFreeVars (Predicate _ x) = [x]
 simpleFreeVars (Equal x y) = [x,y]
