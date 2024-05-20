@@ -33,8 +33,13 @@ type TL p = BC (SimpleTL p)
 instance IsString (TL String) where
   fromString = Prim . Variable
 
+pattern Var :: p -> TL p
 pattern Var p = Prim (Variable p)
+
+pattern S :: TL p -> TL p -> TL p
 pattern S a b = Prim (Since a b)
+
+pattern U :: TL p -> TL p -> TL p
 pattern U a b = Prim (Until a b)
 
 infix 9 `Since`
