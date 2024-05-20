@@ -11,7 +11,6 @@ where
 import Data.Foldable
 import Data.List
 import Data.Maybe
-import Data.Monoid
 import Data.Set (Set)
 import Numeric.Natural
 import qualified Data.Set as Set

@@ -16,7 +16,6 @@ module BooleanCombination
 where
 
 import Control.DeepSeq
-import Data.Monoid
 import Data.Set (Set)
 import qualified Data.Set as Set
 import GHC.Generics
