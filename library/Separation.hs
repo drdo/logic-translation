@@ -71,7 +71,7 @@ simpleSep params@(Params {..}) x
                 | otherwise -> let a' = sep_ params a
                                    b' = sep_ params b
                               in sep_ params (pSimplify $ S a' b') -- case 6
-      Until a b -> pSimplify . dual . sep_ params . dual $ Prim x -- case 7
+      Until _ _ -> pSimplify . dual . sep_ params . dual $ Prim x -- case 7
 
 -- | Case 5
 sep5 :: Ord p
