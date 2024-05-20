@@ -139,7 +139,7 @@ findFreeVariable φ =
 
 ----------------------------------------
 translateWithParams :: (Inhabited x, NFData x, Ord p, Ord x) => Params -> FOMLO p x -> TL p
-translateWithParams params@(Params {..}) φ =
+translateWithParams params φ =
   let t = findFreeVariable φ
   in deepseq t (translate_ params t . pullout params . fomloSimplify $ φ)
 
@@ -154,7 +154,7 @@ translateWithSimplify = translateWithParams $ Params fomloSimplify
 
 --------------------
 translate_ :: (Ord p, Ord x) => Params -> x -> FOMLO p x -> TL p
-translate_ params@(Params {..}) t =
+translate_ params t =
   tlSimplify . bcJoin . bcMap (simpleTranslate_ params t) -- cases 0,1,5,6,7
 
 simpleTranslate_ :: (Ord p, Ord x) => Params -> x -> SimpleFOMLO p x -> TL p
