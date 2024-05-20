@@ -42,6 +42,8 @@ pattern S a b = Prim (Since a b)
 pattern U :: TL p -> TL p -> TL p
 pattern U a b = Prim (Until a b)
 
+{-# COMPLETE Var, S, U, Not, Or, And #-}
+
 infix 9 `Since`
 infix 9 `Until`
 infix 9 `S`
