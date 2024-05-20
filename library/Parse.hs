@@ -63,15 +63,15 @@ bcP primP = spaces *> choiceTry [ botP
                                 , Prim <$> primP]
   where
     variadicOp names constructor = parens $ do
-      choiceTry $ string <$> names
+      _ <- choiceTry $ string <$> names
       constructor <$> many (spaces1 *> bcP primP)
     variadic1Op names constructor = parens $ do
-      choiceTry $ string <$> names
+      _ <- choiceTry $ string <$> names
       constructor <$> many1 (spaces1 *> bcP primP)
     botP = choiceTry (string <$> ["⊥", "bot", "Bot", "false", "False"]) $> bot
     topP = choiceTry (string <$> ["⊤", "top", "Top", "true", "True"]) $> top
     negP = parens $ do
-      choiceTry $ string <$> ["¬", "not", "Not", "neg", "Neg"]
+      _ <- choiceTry $ string <$> ["¬", "not", "Not", "neg", "Neg"]
       spaces1
       Not <$> bcP primP
     orP = variadicOp ["∨", "or", "Or"] disjList
@@ -94,12 +94,12 @@ simpleTlP = spaces *> choiceTry [ variableP
   where
     variableP = Var <$> predicateNameP
     binaryOpP names constructor = parens $ do
-      choiceTry $ string <$> names
+      _ <- choiceTry $ string <$> names
       constructor <$> (spaces1 *> tlP) <*> (spaces1 *> tlP)
     sinceP = binaryOpP ["since", "Since", "s", "S"] S
     untilP = binaryOpP ["until", "Until", "u", "U"] U
     unaryOp names constructor = parens $ do
-      choiceTry $ string <$> names
+      _ <- choiceTry $ string <$> names
       constructor <$> (spaces1 *> tlP)
     nextPastP = unaryOp ["●", "prev", "Prev"] nextPast
     nextP = unaryOp ["○", "next", "Next"] next
@@ -124,7 +124,7 @@ simpleFomloP = spaces *> choiceTry [ equalP
                                    ]
   where
     binaryPredP names constructor = parens $ do
-      choiceTry $ string <$> names
+      _ <- choiceTry $ string <$> names
       args <- spaces *> list2 variableNameP
       pure $ conjList (zipWith constructor args (tail args))
     equalP = binaryPredP ["="] Eq
@@ -133,7 +133,7 @@ simpleFomloP = spaces *> choiceTry [ equalP
     greaterThanP = binaryPredP [">"] (flip Less)
     greaterEqP = binaryPredP ["≥", ">="] (\x y -> Eq x y ∨ Less y x)
     quantifierP names constructor = parens $ do
-      choiceTry $ string <$> names
+      _ <- choiceTry $ string <$> names
       spaces
       (vars, body) <- manyTill1 (spaces *> variableNameP) fomloP
       pure $ ($ body) . foldl1' (.) . map constructor $ vars
