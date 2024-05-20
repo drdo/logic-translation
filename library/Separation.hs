@@ -9,6 +9,7 @@ module Separation
 where
 
 import Data.Foldable
+import Data.Function (on)
 import Data.List
 import Data.Maybe
 import Data.Set (Set)
@@ -137,8 +138,7 @@ case4Pick :: Ord p
           -> Set (Literal (SimpleTL p))
           -> SimpleTL p
 case4Pick _c_ _d_ =
-  let sorted = sortBy (\a b -> compare (simpleTDepth b)
-                                      (simpleTDepth a))
+  let sorted = sortBy (compare `on` simpleTDepth)
              . map unlit
              $ Set.toList (_c_ <> _d_)
       candidates = takeWhile (\a -> simpleTDepth a == simpleTDepth (head sorted))
