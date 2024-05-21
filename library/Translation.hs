@@ -98,7 +98,7 @@ simpleUnextend (Variable Before) = bot
 simpleUnextend (Variable Now) = top
 simpleUnextend (Variable After) = bot
 simpleUnextend (Variable (Base p)) = Var p
-simpleUnextend a@(Since _ _) = simpleUnextendBefore a
+simpleUnextend x@(Since _ _) = simpleUnextendBefore x
   where
     simpleUnextendBefore (Variable Before) = top
     simpleUnextendBefore (Variable Now) = bot
@@ -107,7 +107,7 @@ simpleUnextend a@(Since _ _) = simpleUnextendBefore a
     simpleUnextendBefore (Since a b) = S (unextendBefore a) (unextendBefore b)
     simpleUnextendBefore (Until _ _) = error "simpleUnextendBefore: not separated"
     unextendBefore = bcJoin . bcMap simpleUnextendBefore
-simpleUnextend a@(Until _ _) = simpleUnextendAfter a
+simpleUnextend x@(Until _ _) = simpleUnextendAfter x
   where
     simpleUnextendAfter (Variable Before) = bot
     simpleUnextendAfter (Variable Now) = bot
