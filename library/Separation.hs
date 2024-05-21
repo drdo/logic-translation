@@ -1,3 +1,4 @@
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE MultiWayIf #-}
 {-# LANGUAGE OverloadedLists #-}
 {-# LANGUAGE RecordWildCards #-}
@@ -65,14 +66,14 @@ sep_ :: Ord p => Params p -> TL p -> TL p
 sep_ params@(Params {..}) = pSimplify . bcJoin . bcMap (simpleSep params) -- cases 1,2,3
 
 simpleSep :: Ord p => Params p -> SimpleTL p -> TL p
-simpleSep params@(Params {pSimplify, pCNF, pDNF}) x
-  | simpleIsSep x = Prim x -- case 0
-  | otherwise = case x of
-      Since a b | isSep a && isSep b -> sep5 params (pCNF a) (pDNF b) -- cases 4,5
-                | otherwise -> let a' = sep_ params a
-                                   b' = sep_ params b
-                              in sep_ params (pSimplify $ S a' b') -- case 6
-      Until _ _ -> pSimplify . dual . sep_ params . dual $ Prim x -- case 7
+simpleSep params@(Params {pSimplify, pCNF, pDNF}) = \case
+  Variable p -> Var p -- case 0
+  Since a b 
+    | isSep a && isSep b -> sep5 params (pCNF a) (pDNF b) -- cases 4,5
+    | otherwise -> let a' = sep_ params a
+                       b' = sep_ params b
+                  in sep_ params (pSimplify $ S a' b') -- case 6
+  x@(Until _ _) -> pSimplify . dual . sep_ params . dual $ Prim x -- case 7
 
 -- | Case 5
 sep5 :: Ord p
