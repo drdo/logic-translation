@@ -42,13 +42,13 @@ simplePullout params@(Params {..}) = \case
   φ@(Predicate _ _) -> Prim φ -- case 0
   φ@(Equal _ _) -> Prim φ -- case 0
   φ@(LessThan _ _) -> Prim φ -- case 0
-  φ@(Existential x α) -> -- case 4
+  Existential x α -> -- case 4
     Or $ flip Set.map (pDNF (pullout params α)) $ \conj ->
       let (δs, γs) = Set.partition ((x `Set.member`) . freeVars)
                    . Set.map fromLiteral
                    $ conj
       in pSimplify $ And $ γs <> [Exists x (And δs)]
-  φ@(Universal x α) -> -- case 5
+  Universal x α -> -- case 5
     And $ flip Set.map (pCNF (pullout params α)) $ \disj ->
       let (δs, γs) = Set.partition ((x `Set.member`) . freeVars)
                    . Set.map fromLiteral
@@ -162,10 +162,10 @@ simpleTranslate_ params@(Params {..}) t = \case
   Predicate p _ -> Var p -- case 2
   Equal _ _ -> top -- case 3
   LessThan _ _ -> bot -- case 4
-  φ@(Existential s α) -> -- case 8
+  Existential s α -> -- case 8
     let a = translate_ params s . pSimplify . extend t $ α
     in tlSimplify . unextend . pSep $ eventuallyPast a ∨ a ∨ eventually a
-  φ@(Universal s α) -> -- case 9
+  Universal s α -> -- case 9
     let a = translate_ params s . pSimplify . extend t $ α
     in tlSimplify . unextend . pSep $ foreverPast a ∧ a ∧ forever a
 
