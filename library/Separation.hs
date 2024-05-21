@@ -65,7 +65,7 @@ sep_ :: Ord p => Params p -> TL p -> TL p
 sep_ params@(Params {..}) = pSimplify . bcJoin . bcMap (simpleSep params) -- cases 1,2,3
 
 simpleSep :: Ord p => Params p -> SimpleTL p -> TL p
-simpleSep params@(Params {..}) x
+simpleSep params@(Params {pSimplify, pCNF, pDNF}) x
   | simpleIsSep x = Prim x -- case 0
   | otherwise = case x of
       Since a b | isSep a && isSep b -> sep5 params (pCNF a) (pDNF b) -- cases 4,5
@@ -80,18 +80,14 @@ sep5 :: Ord p
      -> Set (Set (Literal (SimpleTL p)))
      -> Set (Set (Literal (SimpleTL p)))
      -> TL p
-sep5 params@(Params {..}) as bs
+sep5 params@(Params {pSimplify}) as bs
   | Set.null bs = bot
   | Set.null as = pSimplify $ Or $ Set.map (sep4TopLeft params) bs
-  | otherwise =
-      pSimplify $ And (Set.map (\a -> Or (Set.map (sep4 params a) bs)) as)
+  | otherwise = pSimplify $ And (Set.map (\a -> Or (Set.map (sep4 params a) bs)) as)
 
 -- | Case 4 (Special case where the left side is ⊤)
-sep4TopLeft :: Ord p
-            => Params p
-            -> Set (Literal (SimpleTL p))
-            -> TL p
-sep4TopLeft params@(Params {..}) bs =
+sep4TopLeft :: Ord p => Params p -> Set (Literal (SimpleTL p)) -> TL p
+sep4TopLeft params@(Params {pSimplify}) bs =
   let (_d_, _b_) = Set.partition (simpleIsFut . unlit) bs
   in if Set.null _d_
      then S top (And (Set.map fromLiteral bs)) -- Already separated
