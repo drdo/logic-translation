@@ -73,12 +73,12 @@ main = do
                , "    - Variable. String consisting of alphanumeric characters"
                , "    - Since. Names: since, Since, s, S"
                , "    - Until. Names: until, Until, u, U"
-               , "    - Previous. Names: ●, prev, Prev"
-               , "    - Next. Names: ○, next, Next"
-               , "    - Eventually in the past. Names: ⧫, eventually-past, Eventually-Past"
-               , "    - Eventually. Names: ◊, eventually, Eventually"
-               , "    - Forever in the past. Names: ■, forever-past, Forever-Past"
-               , "    - Forever. Names: □, forever, Forever"
+               , "    - Previous. Names: ●, x-1, X-1, prev, Prev"
+               , "    - Next. Names: ○, x, X, next, Next"
+               , "    - Eventually in the past. Names: ⧫, f-1, F, eventually-past, Eventually-Past"
+               , "    - Eventually. Names: ◊, f, F, eventually, Eventually"
+               , "    - Forever in the past. Names: ■, g-1, G-1, forever-past, Forever-Past"
+               , "    - Forever. Names: □, g, G, forever, Forever"
                , "  Available FOMLO operators:"
                , "    - Predicate (one alphanumeric variable).\
                  \ The predicate name itself is also a string of alphanumeric characters.\

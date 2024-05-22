@@ -101,12 +101,12 @@ simpleTlP = spaces *> choiceTry [ variableP
     unaryOp names constructor = parens $ do
       _ <- choiceTry $ string <$> names
       constructor <$> (spaces1 *> tlP)
-    nextPastP = unaryOp ["●", "prev", "Prev"] nextPast
-    nextP = unaryOp ["○", "next", "Next"] next
-    eventuallyPastP = unaryOp ["⧫", "eventually-past", "Eventually-Past"] eventuallyPast
-    eventuallyP = unaryOp ["◊", "eventually", "Eventually"] eventually
-    foreverPastP = unaryOp ["■", "forever-past", "Forever-Past"] foreverPast
-    foreverP = unaryOp ["□", "forever", "Forever"] forever
+    nextPastP = unaryOp ["●", "x-1", "X-1", "prev", "Prev"] nextPast
+    nextP = unaryOp ["○", "x", "X", "next", "Next"] next
+    eventuallyPastP = unaryOp ["⧫", "f-1", "F-1", "eventually-past", "Eventually-Past"] eventuallyPast
+    eventuallyP = unaryOp ["◊", "f", "F", "eventually", "Eventually"] eventually
+    foreverPastP = unaryOp ["■", "g", "G-1", "forever-past", "Forever-Past"] foreverPast
+    foreverP = unaryOp ["□", "g", "G", "forever", "Forever"] forever
 
 tlP :: Stream s m Char => ParsecT s u m (TL String)
 tlP = bcJoin <$> bcP simpleTlP
